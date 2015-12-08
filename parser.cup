@@ -1,0 +1,90 @@
+//imports de classes utilizadas nos codigos abaixo
+import java_cup.runtime.*;
+import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
+import ast.*;
+import visitor.*;
+
+parser code {:
+  protected Lexer lexer;
+:}
+
+init with {:
+  ComplexSymbolFactory f = new ComplexSymbolFactory();
+  symbolFactory = f;
+  File file = new File("input.txt");
+  FileInputStream fis = null;
+  try {
+    fis = new FileInputStream(file);
+  } catch (IOException e) {
+    e.printStackTrace();
+  } 
+  lexer = new Lexer(f,fis);
+:};
+
+scan with {: return lexer.next_token(); :};
+
+
+/* Terminais */
+
+terminal  CLASS, MAIN, IDENTIFIER ,PUBLIC, EXTENDS, STATIC, VOID, IMPRIMIR, WHILE, IF, ELSE, RETURN, OR, AND, EQUAL, NOT_EQUAL, LT, LET, GT, GET, PLUS, MINUS, MULT, DIV, MOD, FALSE, TRUE, THIS, NEW, APARENTESE, FPARENTESE, ACHAVE, FCHAVE, ACOLCHETE, FCOLCHETE, VIRGULA, PVIRGULA, PONTO, NOT, ASSING, LENGTH;
+
+terminal String STRING;
+terminal Integer NUMBER;
+terminal Double NUMBER_DOUBLE;
+terminal Boolean BOOLEAN;
+
+/* Não terminais */
+non terminal Goal, MainClass, ClassDeclaration, VarDeclaration, MethodDeclaration, Type, Statement, Expression, Expr, Identifier, BinaryOp, UnaryOp;
+
+precedence left PLUS, MINUS;
+precedence left MULT;
+precedence left ELSE;
+
+//gramatica para o parser
+Goal  ::= MainClass ClassDeclaration;
+MainClass ::= CLASS Identifier ACHAVE PUBLIC STATIC VOID MAIN APARENTESE STRING Identifier FPARENTESE ACHAVE Statement FCHAVE FCHAVE;
+ClassDeclaration  ::= CLASS Identifier EXTENDS Identifier ACHAVE VarDeclaration MethodDeclaration FCHAVE;
+VarDeclaration  ::= Type Identifier PVIRGULA;
+MethodDeclaration ::= PUBLIC Type Identifier APARENTESE Type Identifier VIRGULA Type Identifier FPARENTESE ACHAVE VarDeclaration Statement RETURN Expression PVIRGULA FCHAVE;
+Type  ::= NUMBER ACOLCHETE FCOLCHETE
+          | BOOLEAN
+          | NUMBER
+          | NUMBER_DOUBLE
+          | Identifier;
+Statement ::= ACHAVE Statement FCHAVE
+              | IF APARENTESE Expression FPARENTESE Statement ELSE Statement
+              | WHILE APARENTESE Expression FPARENTESE Statement
+              | IMPRIMIR APARENTESE Expression FPARENTESE PVIRGULA
+              | Identifier ASSING Expression PVIRGULA
+              | Identifier ACOLCHETE Expression FCOLCHETE ASSING Expression PVIRGULA;
+Expression  ::= | TRUE Expr
+                | FALSE Expr
+                | Identifier Expr
+                | THIS Expr
+                | NEW NUMBER ACOLCHETE Expression FCOLCHETE Expr
+                | NEW Identifier APARENTESE FPARENTESE Expr
+                | APARENTESE Expression FPARENTESE Expr
+                | UnaryOp Expression Expr;
+
+Expr       ::= BinaryOp Expression Expr
+                | ACOLCHETE Expression FCOLCHETE Expr
+                | PONTO LENGTH Expr
+                | PONTO Identifier APARENTESE Expression VIRGULA Expression FPARENTESE Expr
+                | ;
+UnaryOp    ::= NOT;
+BinaryOp   ::= AND 
+                | LT 
+                | LET 
+                | GT 
+                | GET 
+                | PLUS 
+                | MINUS 
+                | MULT 
+                | OR
+                | EQUAL
+                | NOT_EQUAL
+                | MOD
+                | DIV;
+Identifier  ::= IDENTIFIER;
