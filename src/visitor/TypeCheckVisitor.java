@@ -133,11 +133,22 @@ public class TypeCheckVisitor implements TypeVisitor {
 	}
 
 	public Type visit(IntArrayType n) {
-		return null;
+		Type t=n.accept(this);
+		if(!(t instanceof IntegerType))
+			System.out.print("");
+			//apresentar erro
+		
+		return new IntArrayType();
+		//return null;
 	}
 
 	public Type visit(BooleanType n) {
-		return null;
+		Type t=n.accept(this);
+		if(!(t instanceof BooleanType))
+			System.out.print("");//exception
+		
+		return new BooleanType();
+		//return null;
 	}
 
 	public Type visit(IntegerType n) {
@@ -160,7 +171,9 @@ public class TypeCheckVisitor implements TypeVisitor {
 	// Exp e;
 	// Statement s1,s2;
 	public Type visit(If n) {
-		n.e.accept(this);
+		Type t1=n.e.accept(this);
+		if (!(t1 instanceof BooleanType))
+			System.out.print("");//exception 
 		n.s1.accept(this);
 		n.s2.accept(this);
 		return null;
@@ -169,8 +182,10 @@ public class TypeCheckVisitor implements TypeVisitor {
 	// Exp e;
 	// Statement s;
 	public Type visit(While n) {
-		n.e.accept(this);
-		n.s.accept(this);
+		Type t = n.e.accept(this); // Exp e
+		 if(!(t instanceof BooleanType))
+			System.out.print(""); //EXCEPTION
+		n.s.accept(this); 
 		return null;
 	}
 
@@ -183,8 +198,11 @@ public class TypeCheckVisitor implements TypeVisitor {
 	// Identifier i;
 	// Exp e;
 	public Type visit(Assign n) {
-		n.i.accept(this);
-		n.e.accept(this);
+		Type t=n.i.accept(this);
+		Type e=n.e.accept(this);
+		/*if (!(t.equals(e)))
+		//se expressao e é do tipo t 
+		 * e*/
 		return null;
 	}
 
@@ -199,15 +217,19 @@ public class TypeCheckVisitor implements TypeVisitor {
 
 	// Exp e1,e2;
 	public Type visit(And n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
+		Type t1 = n.e1.accept(this);
+		Type t2 = n.e2.accept(this);
+		 if(!(t1 instanceof BooleanType||t2 instanceof BooleanType))
+			System.out.print(""); //EXCEPTION
 		return null;
 	}
 
 	// Exp e1,e2;
 	public Type visit(LessThan n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
+		Type t1 = n.e1.accept(this);
+		Type t2 = n.e2.accept(this);
+		 if(!(t1 instanceof BooleanType||t2 instanceof BooleanType))
+			System.out.print(""); //EXCEPTION
 		return null;
 	}
 
@@ -281,8 +303,13 @@ public class TypeCheckVisitor implements TypeVisitor {
 
 	// Exp e;
 	public Type visit(NewArray n) {
-		n.e.accept(this);
-		return null;
+		Type t=n.e.accept(this);
+		if(!(t instanceof IntegerType))
+			System.out.print("");
+			//apresentar erro
+		
+		return new IntArrayType();
+		//return null;
 	}
 
 	// Identifier i;
