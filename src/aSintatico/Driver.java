@@ -12,8 +12,11 @@ public class Driver {
 		parser  p = new parser();
 		//programa na forma de AST
 		Program prog = (Program)p.parse().value;
-		//chama o visitor de pretty print
-		prog.accept(new PrettyPrintVisitor());
+		BuildSymbolTableVisitor stVis = new BuildSymbolTableVisitor();
+		//construindo tabela de símbolos
+		prog.accept(stVis); 
+		//fazendo a checagem de tipos
+		prog.accept(new TypeCheckVisitor(stVis.getSymbolTable()));
 	}
 
 }
