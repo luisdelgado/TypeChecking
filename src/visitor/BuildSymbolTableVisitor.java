@@ -36,6 +36,7 @@ import ast.Program;
 import ast.This;
 import ast.Times;
 import ast.True;
+import ast.Type;
 import ast.VarDecl;
 import ast.While;
 
@@ -104,8 +105,14 @@ public class BuildSymbolTableVisitor implements Visitor {
 	// Type t;
 	// Identifier i;
 	public void visit(VarDecl n) {
+		Type t=n.t;
 		n.t.accept(this);
-		n.i.accept(this);
+		String id=n.i.s;
+		if(currMethod == null) {
+			if(!currClass.addVar(id, t))
+			System.out.print("variavel ja definida globalmente"); //exception
+		} else if(!currMethod.addParam(id, t))
+			System.out.print("variavel ja definida localmente"); //exception
 	}
 
 	// Type t;
@@ -136,6 +143,10 @@ public class BuildSymbolTableVisitor implements Visitor {
 	public void visit(Formal n) {
 		n.t.accept(this);
 		n.i.accept(this);
+		Type t = n.t;
+		String id = n.i.toString(); 
+		if(!currMethod.addParam(id, t))
+			System.out.print("exception");
 	}
 
 	public void visit(IntArrayType n) {

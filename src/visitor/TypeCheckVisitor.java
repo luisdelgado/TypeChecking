@@ -152,7 +152,11 @@ public class TypeCheckVisitor implements TypeVisitor {
 	}
 
 	public Type visit(IntegerType n) {
-		return null;
+		Type t=n.accept(this);
+		if(!(t instanceof IntegerType))
+			System.out.print("");
+		return new IntArrayType();
+		//return null;
 	}
 
 	// String s;
@@ -210,9 +214,12 @@ public class TypeCheckVisitor implements TypeVisitor {
 	// Exp e1,e2;
 	public Type visit(ArrayAssign n) {
 		n.i.accept(this);
-		n.e1.accept(this);
-		n.e2.accept(this);
-		return null;
+		Type e1=n.e1.accept(this);
+		Type e2=n.e2.accept(this);
+		if(!(e1 instanceof IntArrayType || e2 instanceof IntArrayType))
+			System.out.print(""); //exception
+		return new IntArrayType();
+		//return null;
 	}
 
 	// Exp e1,e2;
@@ -228,42 +235,52 @@ public class TypeCheckVisitor implements TypeVisitor {
 	public Type visit(LessThan n) {
 		Type t1 = n.e1.accept(this);
 		Type t2 = n.e2.accept(this);
-		 if(!(t1 instanceof BooleanType||t2 instanceof BooleanType))
+		 if(!(t1 instanceof IntegerType||t2 instanceof IntegerType))
 			System.out.print(""); //EXCEPTION
 		return null;
 	}
 
 	// Exp e1,e2;
 	public Type visit(Plus n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
+		Type e1 = n.e1.accept(this);
+		Type e2 = n.e2.accept(this);
+		 if(!(e1 instanceof IntegerType||e2 instanceof IntegerType))
+			System.out.print(""); //EXCEPTION
 		return null;
 	}
 
 	// Exp e1,e2;
 	public Type visit(Minus n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
+		Type e1 = n.e1.accept(this);
+		Type e2 = n.e2.accept(this);
+		 if(!(e1 instanceof IntegerType||e2 instanceof IntegerType))
+			System.out.print(""); //EXCEPTION
 		return null;
 	}
 
 	// Exp e1,e2;
 	public Type visit(Times n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
+		Type e1 = n.e1.accept(this);
+		Type e2 = n.e2.accept(this);
+		 if(!(e1 instanceof IntegerType||e2 instanceof IntegerType))
+			System.out.print(""); //EXCEPTION
 		return null;
 	}
 
 	// Exp e1,e2;
 	public Type visit(ArrayLookup n) {
-		n.e1.accept(this);
-		n.e2.accept(this);
+		Type e1 = n.e1.accept(this);
+		Type e2 = n.e2.accept(this);
+		 if(!(e1 instanceof IntegerType||e2 instanceof IntegerType))
+			System.out.print(""); //EXCEPTION
 		return null;
 	}
 
 	// Exp e;
 	public Type visit(ArrayLength n) {
-		n.e.accept(this);
+		Type e = n.e.accept(this);
+		 if(!(e instanceof IntegerType))
+			System.out.print(""); //EXCEPTION
 		return null;
 	}
 
@@ -281,19 +298,23 @@ public class TypeCheckVisitor implements TypeVisitor {
 
 	// int i;
 	public Type visit(IntegerLiteral n) {
+		n.accept(this);
 		return null;
 	}
 
 	public Type visit(True n) {
-		return null;
+		n.accept(this);
+		return new BooleanType();
 	}
 
 	public Type visit(False n) {
-		return null;
+		n.accept(this);
+		return new BooleanType();
 	}
 
 	// String s;
 	public Type visit(IdentifierExp n) {
+		n.accept(this);
 		return null;
 	}
 
@@ -305,7 +326,7 @@ public class TypeCheckVisitor implements TypeVisitor {
 	public Type visit(NewArray n) {
 		Type t=n.e.accept(this);
 		if(!(t instanceof IntegerType))
-			System.out.print("");
+			System.out.print("");//exception
 			//apresentar erro
 		
 		return new IntArrayType();
@@ -314,6 +335,7 @@ public class TypeCheckVisitor implements TypeVisitor {
 
 	// Identifier i;
 	public Type visit(NewObject n) {
+		n.accept(this);
 		return null;
 	}
 
@@ -325,6 +347,7 @@ public class TypeCheckVisitor implements TypeVisitor {
 
 	// String s;
 	public Type visit(Identifier n) {
+		n.accept(this);
 		return null;
 	}
 }
